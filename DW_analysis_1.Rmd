@@ -1,0 +1,52 @@
+---
+title: "COVID-19 Analysis for Dennis Woodson"
+author: "David J Jackson"
+date: "7/9/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,fig.width=9, fig.height=6)
+library(tidyverse)
+library(lubridate)
+library(RSQLite)
+library(scales)
+theme_set(theme_light())
+```
+
+## What is a Analysis?
+
+Analysis is the process of breaking a complex topic or substance into smaller parts in order to gain a better understanding of it. The technique has been applied in the study of mathematics and logic since before Aristotle, though analysis as a formal concept is a relatively recent development.(Wikipedia)
+
+```{r,echo=FALSE}
+db <- dbConnect(SQLite(), dbname="../COVIDDB/CORVID.sqlite3")
+STATES <- dbGetQuery(db, "SELECT * FROM USA ;")
+ECDC <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
+JHU <- dbGetQuery(db, "SELECT * FROM JHUDATA WHERE country='US' ;")
+
+ECDC$Reported <- ymd(ECDC$Reported)
+JHU$date <- ymd(JHU$date)
+STATES$date <- ymd(STATES$date)
+dbDisconnect(db)
+```
+```{r}
+JHU$DC <- JHU$confirmed - lag(JHU$confirmed)
+JHU$DD <- JHU$deaths - lag(JHU$deaths)
+```
+
+## The Whole Shootin Match: Jan. 23,2020 - July 8, 2020
+### Daily And Cumulative Cases
+
+```{r}
+ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+    geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
+  labs(title="ECDC and John Hopkins: Daily Cases for US")
+```
+```{r}
+ STATES%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times",size=1)) +
+  geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins",size=1)) +
+  labs(title="NYTimes/John Hopkins: US Cumulative Cases",
+      subtitle = "(Jan. 23, 2020 - July 8,2020")
+```
+
+
