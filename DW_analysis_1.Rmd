@@ -19,34 +19,69 @@ theme_set(theme_light())
 Analysis is the process of breaking a complex topic or substance into smaller parts in order to gain a better understanding of it. The technique has been applied in the study of mathematics and logic since before Aristotle, though analysis as a formal concept is a relatively recent development.(Wikipedia)
 
 ```{r,echo=FALSE}
+rm(list=ls())
 db <- dbConnect(SQLite(), dbname="../COVIDDB/CORVID.sqlite3")
-STATES <- dbGetQuery(db, "SELECT * FROM USA ;")
+NYT <- dbGetQuery(db, "SELECT * FROM USA ;")
 ECDC <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
 JHU <- dbGetQuery(db, "SELECT * FROM JHUDATA WHERE country='US' ;")
 
 ECDC$Reported <- ymd(ECDC$Reported)
 JHU$date <- ymd(JHU$date)
-STATES$date <- ymd(STATES$date)
+NYT$date <- ymd(NYT$date)
 dbDisconnect(db)
 ```
 ```{r}
 JHU$DC <- JHU$confirmed - lag(JHU$confirmed)
 JHU$DD <- JHU$deaths - lag(JHU$deaths)
+
+NYT$DC <- NYT$cases - lag(NYT$cases)
+NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ```
 
 ## The Whole Shootin Match: Jan. 23,2020 - July 8, 2020
-### Daily And Cumulative Cases
+### Total Daily Cases and Deaths
 
 ```{r}
 ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
     geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
-  labs(title="ECDC and John Hopkins: Daily Cases for US")
+    geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
+  labs(title="ECDC/John Hopkins/NY Times: Daily Cases for  the US")
+
+ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+    geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
+    geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
+  labs(title="ECDC/John Hopkins/NY Times: Daily Death for  the US")
 ```
+
+### Total Cumulative Cases
+
 ```{r}
- STATES%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times",size=1)) +
-  geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins",size=1)) +
+ NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times",linetype="*"),size=1.5) +
+  geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins",linetype="#"),size=1.5) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
       subtitle = "(Jan. 23, 2020 - July 8,2020")
 ```
 
+### Weekly Totals for Cases and Deaths
+
+```{r, echo=FALSE}
+ECDC_Weekly <- ECDC %>% group_by(Weekly = floor_date(Reported,"week")) %>%
+  summarise(across(Cases:Deaths,list(Sum = sum)))
+  
+JHU_Weekly <- JHU %>% group_by(Weekly = floor_date(date,"week")) %>%
+  summarise(across(DC:DD,list(Sum=sum)))
+
+NYT_Weekly <- NYT %>% group_by(Weekly = floor_date(date,"week")) %>%
+  summarise(across(cases:deaths,list(Sum = sum)))
+```
+```{r}
+ggplot() + geom_col(data=ECDC_Weekly,aes(x=Weekly,y=Cases_Sum,col="ECDC")) 
+        
+```
+```{r}
+ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum,col="JHU"))
+```
+```{r}
+ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum,col="NYT"))
+```
 
