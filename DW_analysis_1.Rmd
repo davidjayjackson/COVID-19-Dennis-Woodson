@@ -75,8 +75,11 @@ NYT_Weekly <- NYT %>% group_by(Weekly = floor_date(date,"week")) %>%
   summarise(across(cases:deaths,list(Sum = sum)))
 ```
 ```{r}
-ggplot() + geom_col(data=ECDC_Weekly,aes(x=Weekly,y=Cases_Sum,col="ECDC")) 
-        
+ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum)) +
+  labs(title="John Hopkins Weekly US Cases")
+  
+ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
+  labs(title="John Hopkins Weekly US Deaths")      
 ```
 ```{r}
 ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum,col="JHU"))
