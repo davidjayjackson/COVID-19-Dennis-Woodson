@@ -1,9 +1,15 @@
 ---
+output:
+  pdf_document: default
+  html_document: default
+---
+---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
 date: "7/9/2020"
-output: html_document
----
+output:
+  pdf_document: default
+ ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE,fig.width=9, fig.height=6)
@@ -11,7 +17,6 @@ library(tidyverse)
 library(lubridate)
 library(RSQLite)
 library(scales)
-library(plotly)
 theme_set(theme_light())
 ```
 
@@ -31,7 +36,7 @@ JHU$date <- ymd(JHU$date)
 NYT$date <- ymd(NYT$date)
 dbDisconnect(db)
 ```
-```{r, echo=FALSE}
+```{r}
 JHU$DC <- JHU$confirmed - lag(JHU$confirmed)
 JHU$DD <- JHU$deaths - lag(JHU$deaths)
 
@@ -42,23 +47,21 @@ NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ## The Whole Shootin Match: Jan. 23,2020 - July 8, 2020
 ### Total Daily Cases and Deaths
 
-```{r, echo=FALSE}
-plot1 <-ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+```{r}
+ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
     geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
   labs(title="ECDC/John Hopkins/NY Times: Daily Cases for  the US")
 
-plot2 <- ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
     geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
   labs(title="ECDC/John Hopkins/NY Times: Daily Death for  the US")
-ggplotly(plot1)
-ggplotly(plot2)
 ```
 
 ### Total Cumulative Cases
 
-```{r, echo=FALSE}
+```{r}
  NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times",linetype="*"),size=1.5) +
   geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins",linetype="#"),size=1.5) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
@@ -84,19 +87,19 @@ ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum)) +
 ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
   labs(title="John Hopkins Weekly US Deaths")      
 ```
-```{r, echo=FALSE}
+```{r}
 ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum,col="JHU"))
 ```
-```{r, echo=FALSE}
+```{r}
 ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum,col="NYT"))
 ```
 
 ## A Look at the April 2020 Spike
 
-```{r,echo=FALSE}
-A <- ECDC %>% filter(Reported >="2020-04-01" & Reported <="2020-04-30")
-B <- JHU %>% filter(date >="2020-04-01" & date <="2020-04-30")
-C <- NYT %>% filter(date >="2020-04-01" & date <="2020-04-30")
+```{r}
+A <- ECDC %>% filter(Reported >="2010-04-01" & Reported <="2020-04-30")
+B <- JHU %>% filter(date >="2010-04-01" & date <="2020-04-30")
+C <- NYT %>% filter(date >="2010-04-01" & date <="2020-04-30")
 
 A %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
     geom_line(data=B,aes(x=date,y=DC,col="John Hopkins")) +
