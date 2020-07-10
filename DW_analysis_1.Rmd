@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/9/2020"
+date: "7/10/2020"
 output: html_document
 ---
 
@@ -21,7 +21,7 @@ Analysis is the process of breaking a complex topic or substance into smaller pa
 
 ```{r,echo=FALSE}
 rm(list=ls())
-db <- dbConnect(SQLite(), dbname="../COVIDDB/CORVID.sqlite3")
+db <- dbConnect(SQLite(), dbname="../COVIDDB/COVID.sqlite3")
 NYT <- dbGetQuery(db, "SELECT * FROM USA ;")
 ECDC <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
 JHU <- dbGetQuery(db, "SELECT * FROM JHUDATA WHERE country='US' ;")
