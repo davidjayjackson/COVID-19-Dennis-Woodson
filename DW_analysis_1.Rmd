@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/11/2020"
+date: "7/12/2020"
 output: html_document
 ---
 
@@ -43,26 +43,27 @@ NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
-plot1 <-ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+plot_1 <-ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
     geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
   labs(title="ECDC/John Hopkins/NY Times: Daily Cases for  the US")
 
-plot2 <- ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+plot_2 <- ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
     geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
   labs(title="ECDC/John Hopkins/NY Times: Daily Death for  the US")
-ggplotly(plot1)
-ggplotly(plot2)
+ggplotly(plot_1)
+ggplotly(plot_2)
 ```
 
 ### Total Cumulative Cases
 
 ```{r, echo=FALSE}
- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times",linetype="*"),size=1.5) +
-  geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins",linetype="#"),size=1.5) +
+plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
+  geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
       subtitle = "(Jan. 23, 2020 - July 8,2020")
+ggplotly(plot_3)
 ```
 
 ### Weekly Totals for Cases and Deaths
@@ -78,20 +79,29 @@ NYT_Weekly <- NYT %>% group_by(Weekly = floor_date(date,"week")) %>%
   summarise(across(cases:deaths,list(Sum = sum)))
 ```
 ```{r}
-ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum)) +
+plot_4 <- ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum)) +
   labs(title="John Hopkins Weekly US Cases")
   
-ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
+plot_5 <- ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
   labs(title="John Hopkins Weekly US Deaths")      
 ```
 ```{r, echo=FALSE}
-ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DC_Sum,col="JHU"))
+plot_6 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum)) +
+      labs(title="John Hopkins Weekly Cases")
 ```
 ```{r, echo=FALSE}
-ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum,col="NYT"))
+plot_7 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=deaths_Sum)) +
+      labs(title="NY Times Weekly Cases")
+```
+```{r, echo=FALSE}
+ggplotly(plot_3)
+ggplotly(plot_4)
+ggplotly(plot_5)
+ggplotly(plot_6)
+ggplotly(plot_7)
 ```
 
-## A Look at the April 2020 Spike
+##  Look Back at the April 2020 Spike
 
 ```{r,echo=FALSE}
 A <- ECDC %>% filter(Reported >="2020-04-01" & Reported <="2020-04-30")
