@@ -64,6 +64,12 @@ plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
       subtitle = "(Jan. 23, 2020 - July 8,2020")
 ggplotly(plot_3)
+
+plot_3A <- NYT%>% ggplot() + geom_line(aes(x=date,y=deaths,col="NY Times")) +
+  geom_line(data=JHU,aes(x=date,y=deaths,col="John Hopkins")) +
+  labs(title="NYTimes/John Hopkins: US Cumulative deaths",
+      subtitle = "(Jan. 23, 2020 - July 8,2020")
+ggplotly(plot_3A)
 ```
 
 ### Weekly Totals for Cases and Deaths
@@ -86,19 +92,19 @@ plot_5 <- ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
   labs(title="John Hopkins Weekly US Deaths")      
 ```
 ```{r, echo=FALSE}
-plot_6 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum)) +
+# plot_6 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=cases_Sum)) +
       labs(title="John Hopkins Weekly Cases")
 ```
 ```{r, echo=FALSE}
-plot_7 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=deaths_Sum)) +
+# plot_7 <- ggplot() + geom_col(data=NYT_Weekly,aes(x=Weekly,y=deaths_Sum)) +
       labs(title="NY Times Weekly Cases")
 ```
 ```{r, echo=FALSE}
 ggplotly(plot_3)
 ggplotly(plot_4)
 ggplotly(plot_5)
-ggplotly(plot_6)
-ggplotly(plot_7)
+# ggplotly(plot_6)
+# ggplotly(plot_7)
 ```
 
 ##  Look Back at the April 2020 Spike
