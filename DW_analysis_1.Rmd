@@ -100,14 +100,13 @@ plot_5 <- ggplot() + geom_col(data=JHU_Weekly,aes(x=Weekly,y=DD_Sum)) +
       labs(title="NY Times Weekly Cases")
 ```
 ```{r, echo=FALSE}
-ggplotly(plot_3)
 ggplotly(plot_4)
 ggplotly(plot_5)
 # ggplotly(plot_6)
 # ggplotly(plot_7)
 ```
 
-##  Look Back at the April 2020 Spike
+##  First  Spike: In Daily U.S. Cases and Deaths April 1- 30 2020 
 
 ```{r,echo=FALSE}
 A <- ECDC %>% filter(Reported >="2020-04-01" & Reported <="2020-04-30")
@@ -117,11 +116,30 @@ C <- NYT %>% filter(date >="2020-04-01" & date <="2020-04-30")
 A %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
     geom_line(data=B,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="ECDC/John Hopkins/NY Times: Daily Cases for  the US")
+  labs(title="First Spike in U.S. Daily Cases (Apil 2020")
 
 A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
     geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DD,col="NY Times")) +
-  labs(title="ECDC/John Hopkins/NY Times: Daily Death for  the US")
+  labs(title="First Spike in U.S.  Daily Death for  the US")
+```
+
+### Current Spike in U.S. Daily Cases and Deaths: June 1, 2020 - Present
+
+```{r}
+AA<- ECDC %>% filter(Reported >="2020-06-01" )
+BA<- JHU %>% filter(date >="2020-6-01" )
+CA <- NYT %>% filter(date >="2020-06-01")
+```
+```{r}
+AA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+    geom_line(data=BA,aes(x=date,y=DC,col="John Hopkins")) +
+    geom_line(data=CA,aes(x=date,y=DC,col="NY Times")) +
+  labs(title="Current  Spike in Cases: June 1, 2020 - Present")
+
+AA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+    geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
+    geom_line(data=C,aes(x=date,y=DD,col="NY Times")) +
+  labs(title="Current Spike in Deaths: June 1, 2020 - Present")
 ```
 
