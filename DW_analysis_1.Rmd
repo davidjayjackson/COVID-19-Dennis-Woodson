@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/16/2020"
+date: "7/20/2020"
 output: html_document
 ---
 
@@ -23,10 +23,11 @@ Analysis is the process of breaking a complex topic or substance into smaller pa
 rm(list=ls())
 db <- dbConnect(SQLite(), dbname="../COVIDDB/COVID.sqlite3")
 NYT <- dbGetQuery(db, "SELECT * FROM USA ;")
-ECDC <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
+USA <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
 JHU <- dbGetQuery(db, "SELECT * FROM JHUDATA WHERE country='US' ;")
-
-ECDC$Reported <- ymd(ECDC$Reported)
+dbDisconnect(db)
+ 
+USA$Reported <- ymd(USA$Reported)
 JHU$date <- ymd(JHU$date)
 NYT$date <- ymd(NYT$date)
 dbDisconnect(db)
@@ -43,15 +44,15 @@ NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
-plot_1 <-ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+plot_1 <-USA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
     geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="ECDC/John Hopkins/NY Times: Daily Cases for  the US")
+  labs(title="USA/John Hopkins/NY Times: Daily Cases for  the US")
 
-plot_2 <- ECDC %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+plot_2 <- USA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
     geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
-  labs(title="ECDC/John Hopkins/NY Times: Daily Death for  the US")
+  labs(title="USA/John Hopkins/NY Times: Daily Death for  the US")
 ggplotly(plot_1)
 ggplotly(plot_2)
 ```
@@ -75,7 +76,7 @@ ggplotly(plot_3A)
 ### Weekly Totals for Cases and Deaths
 
 ```{r, echo=FALSE}
-ECDC_Weekly <- ECDC %>% group_by(Weekly = floor_date(Reported,"week")) %>%
+USA_Weekly <- USA %>% group_by(Weekly = floor_date(Reported,"week")) %>%
   summarise(across(Cases:Deaths,list(Sum = sum)))
   
 JHU_Weekly <- JHU %>% group_by(Weekly = floor_date(date,"week")) %>%
@@ -109,16 +110,16 @@ ggplotly(plot_5)
 ##  First  Spike: In Daily U.S. Cases and Deaths April 1- 30 2020 
 
 ```{r,echo=FALSE}
-A <- ECDC %>% filter(Reported >="2020-04-01" & Reported <="2020-04-30")
+A <- USA %>% filter(Reported >="2020-04-01" & Reported <="2020-04-30")
 B <- JHU %>% filter(date >="2020-04-01" & date <="2020-04-30")
 C <- NYT %>% filter(date >="2020-04-01" & date <="2020-04-30")
 
-A %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+A %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
     geom_line(data=B,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DC,col="NY Times")) +
   labs(title="First Spike in U.S. Daily Cases (Apil 2020")
 
-A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
     geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DD,col="NY Times")) +
   labs(title="First Spike in U.S.  Daily Death for  the US")
@@ -127,19 +128,18 @@ A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
 ### Current Spike in U.S. Daily Cases and Deaths: June 1, 2020 - Present
 
 ```{r}
-AA<- ECDC %>% filter(Reported >="2020-06-01" )
+AA<- USA %>% filter(Reported >="2020-06-01" )
 BA<- JHU %>% filter(date >="2020-6-01" )
 CA <- NYT %>% filter(date >="2020-06-01")
 ```
 ```{r}
-AA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDC")) +
+AA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
     geom_line(data=BA,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=CA,aes(x=date,y=DC,col="NY Times")) +
   labs(title="Current  Spike in Cases: June 1, 2020 - Present")
 
-AA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECDC")) +
+AA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
     geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DD,col="NY Times")) +
   labs(title="Current Spike in Deaths: June 1, 2020 - Present")
 ```
-
