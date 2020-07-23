@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/22/2020"
+date: "7/23/2020"
 output: html_document
 ---
 
@@ -44,15 +44,15 @@ NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
-plot_1 <-USA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
+plot_1 <-USA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDPC")) +
     geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="USA/John Hopkins/NY Times: Daily Cases for  the US")
+  labs(title="USA Daily Cases: John Hopkins/NY Times and European CDPC")
 
-plot_2 <- USA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
+plot_2 <- USA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECPDC")) +
     geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
-  labs(title="USA/John Hopkins/NY Times: Daily Death for  the US")
+  labs(title="UDA Daily Deaths: John Hopkins/NY Times and European CDPC")
 ggplotly(plot_1)
 ggplotly(plot_2)
 ```
@@ -63,13 +63,13 @@ ggplotly(plot_2)
 plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
-      subtitle = "(Jan. 23, 2020 - July 8,2020")
+      subtitle = "(Jan. 23, 2020 - July 23,2020")
 ggplotly(plot_3)
 
 plot_3A <- NYT%>% ggplot() + geom_line(aes(x=date,y=deaths,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=deaths,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative deaths",
-      subtitle = "(Jan. 23, 2020 - July 8,2020")
+      subtitle = "(Jan. 23, 2020 - July 23,2020")
 ggplotly(plot_3A)
 ```
 
