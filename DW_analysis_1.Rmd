@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/27/2020"
+date: "7/30/2020"
 output: html_document
 ---
 
@@ -40,7 +40,7 @@ NYT$DC <- NYT$cases - lag(NYT$cases)
 NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ```
 
-## The Whole Shootin Match: Jan. 23,2020 - July 8, 2020
+## The Whole Shootin Match: Jan. 23,2020 - July 30, 2020
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
@@ -63,13 +63,13 @@ ggplotly(plot_2)
 plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
-      subtitle = "(Jan. 23, 2020 - July 23,2020")
+      subtitle = "(Jan. 23, 2020 - July 30,2020")
 ggplotly(plot_3)
 
 plot_3A <- NYT%>% ggplot() + geom_line(aes(x=date,y=deaths,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=deaths,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative deaths",
-      subtitle = "(Jan. 23, 2020 - July 23,2020")
+      subtitle = "(Jan. 23, 2020 - July 30,2020")
 ggplotly(plot_3A)
 ```
 
@@ -117,7 +117,7 @@ C <- NYT %>% filter(date >="2020-04-01" & date <="2020-04-30")
 A %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
     geom_line(data=B,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="First Spike in U.S. Daily Cases (Apil 2020")
+  labs(title="First Spike in U.S. Daily Cases (April 2020")
 
 A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
     geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
@@ -125,21 +125,21 @@ A %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
   labs(title="First Spike in U.S.  Daily Death for  the US")
 ```
 
-### Current Spike in U.S. Daily Cases and Deaths: June 1, 2020 - Present
+### Current Spike in U.S. Daily Cases and Deaths: May 1, 2020 - Present
 
 ```{r}
-AA<- USA %>% filter(Reported >="2020-06-01" )
-BA<- JHU %>% filter(date >="2020-6-01" )
-CA <- NYT %>% filter(date >="2020-06-01")
+AA<- USA %>% filter(Reported >="2020-05-01" )
+BA<- JHU %>% filter(date >="2020-05-01" )
+CA <- NYT %>% filter(date >="2020-05-01")
 ```
 ```{r}
 AA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="USA")) +
     geom_line(data=BA,aes(x=date,y=DC,col="John Hopkins")) +
     geom_line(data=CA,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="Current  Spike in Cases: June 1, 2020 - Present")
+  labs(title="Current  Spike in Cases: May  1, 2020 - Present")
 
 AA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="USA")) +
     geom_line(data=B,aes(x=date,y=DD,col="John Hopkins")) +
     geom_line(data=C,aes(x=date,y=DD,col="NY Times")) +
-  labs(title="Current Spike in Deaths: June 1, 2020 - Present")
+  labs(title="Current Spike in Deaths: May  1, 2020 - Present")
 ```
