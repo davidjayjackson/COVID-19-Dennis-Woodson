@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "7/31/2020"
+date: "August 1, 2020"
 output: html_document
 ---
 
@@ -40,7 +40,7 @@ NYT$DC <- NYT$cases - lag(NYT$cases)
 NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ```
 
-## The Whole Shootin Match: Jan. 23,2020 - July 30, 2020
+## The Whole Shootin Match: Jan. 23,2020 - August 1, 2020
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
