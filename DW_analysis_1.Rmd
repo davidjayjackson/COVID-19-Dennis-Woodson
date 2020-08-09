@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "August 8, 2020"
+date: "August 9, 2020"
 output: html_document
 ---
 
@@ -12,6 +12,7 @@ library(lubridate)
 library(RSQLite)
 library(scales)
 library(plotly)
+# library(pracma)
 theme_set(theme_light())
 ```
 
@@ -25,7 +26,6 @@ db <- dbConnect(SQLite(), dbname="../COVIDDB/COVID.sqlite3")
 NYT <- dbGetQuery(db, "SELECT * FROM USA ;")
 USA <-  dbGetQuery(db, "SELECT * FROM ECDC  WHERE Countries ='USA';")
 JHU <- dbGetQuery(db, "SELECT * FROM JHUDATA WHERE country='US' ;")
-dbDisconnect(db)
  
 USA$Reported <- ymd(USA$Reported)
 JHU$date <- ymd(JHU$date)
@@ -39,20 +39,22 @@ JHU$DD <- JHU$deaths - lag(JHU$deaths)
 NYT$DC <- NYT$cases - lag(NYT$cases)
 NYT$DD <-NYT$deaths - lag(NYT$deaths)
 ```
+```{r}
+USA$CEMA <-  pracma::movavg(USA$Cases,14,type=c("e"))
+USA$DEMA <-  pracma::movavg(USA$Deaths,14,type=c("e"))
+```
 
-## The Whole Shootin Match: Jan. 23,2020 - August 1, 2020
+## The Whole Shootin Match: Jan. 23,2020 - August 9, 2020
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
-plot_1 <-USA %>% ggplot() + geom_line(aes(x=Reported,y=Cases,col="ECDPC")) +
-    geom_line(data=JHU,aes(x=date,y=DC,col="John Hopkins")) +
-    geom_line(data=NYT,aes(x=date,y=DC,col="NY Times")) +
-  labs(title="USA Daily Cases: John Hopkins/NY Times and European CDPC")
+plot_1 <- ggplot(USA) + geom_line(aes(x=Reported,y=Cases,col="ECDPC")) +
+    geom_line(aes(x=Reported,y=CEMA,col="Mean")) +
+  labs(title="USA Daily Cases:  Daily vs 14 Day Exponential Average) ")
 
 plot_2 <- USA %>% ggplot() + geom_line(aes(x=Reported,y=Deaths,col="ECPDC")) +
-    geom_line(data=JHU,aes(x=date,y=DD,col="John Hopkins")) +
-    geom_line(data=NYT,aes(x=date,y=DD,col="NY Times")) +
-  labs(title="UDA Daily Deaths: John Hopkins/NY Times and European CDPC")
+     geom_line(aes(x=Reported,y=DEMA,col="EMA")) +
+      labs(title="USA COVID-19 Deaths: Daily vs  14 Day Exponential Average")
 ggplotly(plot_1)
 ggplotly(plot_2)
 ```
@@ -63,13 +65,13 @@ ggplotly(plot_2)
 plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
-      subtitle = "(Jan. 23, 2020 - July 30,2020")
+      subtitle = "(Jan. 23, 2020 - August 9,2020")
 ggplotly(plot_3)
 
 plot_3A <- NYT%>% ggplot() + geom_line(aes(x=date,y=deaths,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=deaths,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative deaths",
-      subtitle = "(Jan. 23, 2020 - July 30,2020")
+      subtitle = "(Jan. 23, 2020 - August 9,2020")
 ggplotly(plot_3A)
 ```
 
