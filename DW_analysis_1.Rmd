@@ -1,7 +1,7 @@
 ---
 title: "COVID-19 Analysis for Dennis Woodson"
 author: "David J Jackson"
-date: "August 9, 2020"
+date: "August 11, 2020"
 output: html_document
 ---
 
@@ -44,7 +44,7 @@ USA$CEMA <-  pracma::movavg(USA$Cases,14,type=c("e"))
 USA$DEMA <-  pracma::movavg(USA$Deaths,14,type=c("e"))
 ```
 
-## The Whole Shootin Match: Jan. 23,2020 - August 9, 2020
+## The Whole Shootin Match: Jan. 23,2020 - August 10, 2020
 ### Total Daily Cases and Deaths
 
 ```{r, echo=FALSE}
@@ -65,13 +65,13 @@ ggplotly(plot_2)
 plot_3 <- NYT%>% ggplot() + geom_line(aes(x=date,y=cases,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=confirmed,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative Cases",
-      subtitle = "(Jan. 23, 2020 - August 9,2020")
+      subtitle = "(Jan. 23, 2020 - August 10,2020")
 ggplotly(plot_3)
 
 plot_3A <- NYT%>% ggplot() + geom_line(aes(x=date,y=deaths,col="NY Times")) +
   geom_line(data=JHU,aes(x=date,y=deaths,col="John Hopkins")) +
   labs(title="NYTimes/John Hopkins: US Cumulative deaths",
-      subtitle = "(Jan. 23, 2020 - August 9,2020")
+      subtitle = "(Jan. 23, 2020 - August 10,2020")
 ggplotly(plot_3A)
 ```
 
